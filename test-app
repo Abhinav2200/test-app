@@ -1,0 +1,28 @@
+from flask import Flask, jsonify  
+import os  
+import time  
+import subprocess  
+
+app = Flask(__name__)  
+
+@app.route("/htop")  
+def htop():  
+    # Get system info  
+    name = "Your Full Name"  # Replace with your full name  
+    username = os.getenv('USER')  # Getting the system username  
+    server_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))  
+
+    # Capture top output  
+    top_output = subprocess.run(['top', '-b', '-n', '1'], stdout=subprocess.PIPE, text=True)  
+
+    response = {  
+        'Name': name,  
+        'Username': username,  
+        'Server Time (IST)': server_time,  
+        'Top Output': top_output.stdout  
+    }  
+
+    return "<pre>" + str(response) + "</pre>"  
+
+if __name__ == "__main__":  
+    app.run(host='0.0.0.0', port=5000)  
